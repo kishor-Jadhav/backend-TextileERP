@@ -1,0 +1,227 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports"
+              xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+              xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd"
+              name="DesignReport"
+              pageWidth="595"
+              pageHeight="842"
+              columnWidth="535"
+              leftMargin="30"
+              rightMargin="30"
+              topMargin="20"
+              bottomMargin="20">
+
+    <!-- Styles -->
+    <style name="Title" fontName="Times New Roman" fontSize="12" isBold="true"  forecolor="#FFFFFF" vAlign="Middle"/>
+    <!-- Column Header style with borders -->
+    <style name="ColumnHeader" fontName="Times New Roman" fontSize="12" isBold="true"
+           forecolor="#333333" backcolor="#E5E5E5"
+           leftPadding="5" rightPadding="5"  vAlign="Middle">
+        <box>
+            <pen lineWidth="0.5" lineColor="#000000" lineStyle="Solid"/>
+        </box>
+    </style>
+    <!-- Detail style with borders -->
+    <style name="DetailStyle" fontName="Times New Roman" fontSize="11"
+           leftPadding="5" rightPadding="5" vAlign="Middle">
+        <box>
+            <pen lineWidth="0.5" lineColor="#000000" lineStyle="Solid"/>
+        </box>
+    </style>
+
+    <!-- Row style (for alternating color) -->
+    <style name="Row" fontName="Times New Roman" fontSize="11" mode="Transparent">
+        <conditionalStyle>
+            <conditionExpression><![CDATA[$V{REPORT_COUNT} % 2 == 0]]></conditionExpression>
+            <style mode="Opaque" backcolor="#F9F9F9"/>
+        </conditionalStyle>
+    </style>
+   <style name="BlankTablestyle" topPadding="20"> </style>
+    <!-- Fields -->
+    <field name="designName" class="java.lang.String"/>
+    <field name="qualMaster.qualityName" class="java.lang.String"/>
+    <field name="width" class="java.lang.String"/>
+    <field name="reed" class="java.lang.String"/>
+    <field name="pick" class="java.lang.Integer"/>
+
+    <!-- Title-  Appears once at the very top (e.g. report title). -->
+    <title>
+        <band height="50">
+            <frame>
+                <reportElement mode="Opaque" x="0" y="0" width="535" height="20" backcolor="#004080"/>
+                <staticText>
+                    <reportElement style="Title" x="0" y="0" width="400" height="20"/>
+                    <text><![CDATA[Design Report]]></text>
+                </staticText>
+
+            </frame>
+        </band>
+    </title>
+
+    <!-- Column Header-  Header row for column data.-->
+    <columnHeader>
+        <band height="25" >
+            <staticText>
+                <reportElement style="ColumnHeader" x="0" y="0" width="50" height="25"/>
+                <text><![CDATA[SR.No]]></text>
+            </staticText>
+            <staticText>
+                <reportElement style="ColumnHeader" x="50" y="0" width="138" height="25"/>
+                <text><![CDATA[Design Name]]></text>
+            </staticText>
+            <staticText>
+                <reportElement style="ColumnHeader" x="188" y="0" width="138" height="25"/>
+                <text><![CDATA[Quality Name]]></text>
+            </staticText>
+            <staticText>
+                <reportElement style="ColumnHeader" x="326" y="0" width="50" height="25"/>
+                <text><![CDATA[Width]]></text>
+            </staticText>
+            <staticText>
+                <reportElement style="ColumnHeader" x="376" y="0" width="50" height="25"/>
+                <text><![CDATA[Reed]]></text>
+            </staticText>
+            <staticText>
+                <reportElement style="ColumnHeader" x="426" y="0" width="50" height="25"/>
+                <text><![CDATA[Pick]]></text>
+            </staticText>
+        </band>
+    </columnHeader>
+
+    <!-- Detail -->
+    <detail>
+        <band height="22">
+            <frame>
+                <reportElement style="Row" x="0" y="0" width="535" height="22"/>
+                <textField>
+                    <reportElement style="DetailStyle" x="0" y="0" width="50" height="22"/>
+                    <textElement verticalAlignment="Middle"/>
+                    <textFieldExpression><![CDATA[$V{REPORT_COUNT}]]></textFieldExpression>
+                </textField>
+                <textField>
+                    <reportElement style="DetailStyle" x="50" y="0" width="138" height="22"/>
+                    <textElement verticalAlignment="Middle"/>
+                    <textFieldExpression><![CDATA[$F{designName}]]></textFieldExpression>
+                </textField>
+                <textField>
+                    <reportElement style="DetailStyle" x="188" y="0" width="138" height="22"/>
+                    <textElement verticalAlignment="Middle"/>
+                    <textFieldExpression><![CDATA[$F{qualMaster.qualityName}]]></textFieldExpression>
+                </textField>
+                <textField>
+                    <reportElement style="DetailStyle" x="326" y="0" width="50" height="22"/>
+                    <textElement textAlignment="Right" verticalAlignment="Middle"/>
+                    <textFieldExpression><![CDATA[$F{width}]]></textFieldExpression>
+                </textField>
+                <textField>
+                    <reportElement style="DetailStyle" x="376" y="0" width="50" height="22"/>
+                    <textElement textAlignment="Right" verticalAlignment="Middle"/>
+                    <textFieldExpression><![CDATA[$F{reed}]]></textFieldExpression>
+                </textField>
+                <textField>
+                    <reportElement style="DetailStyle" x="426" y="0" width="50" height="22"/>
+                    <textElement textAlignment="Right" verticalAlignment="Middle"/>
+                    <textFieldExpression><![CDATA[$F{pick}]]></textFieldExpression>
+                </textField>
+            </frame>
+        </band>
+    </detail>
+
+    <!-- Page Footer often contains page numbe-->
+    <pageFooter>
+        <band height="25">
+            <frame>
+                <reportElement mode="Opaque" x="0" y="0" width="535" height="25" backcolor="#F0F0F0"/>
+                <textField pattern="EEEEE dd MMMMM yyyy">
+                    <reportElement style="DetailStyle" x="5" y="2" width="200" height="20"/>
+                    <textFieldExpression><![CDATA[new java.util.Date()]]></textFieldExpression>
+                </textField>
+                <textField evaluationTime="Report">
+                    <reportElement style="DetailStyle" x="400" y="2" width="130" height="20"/>
+                    <textElement textAlignment="Right" verticalAlignment="Middle"/>
+                    <textFieldExpression><![CDATA["Page " + $V{PAGE_NUMBER} + " of " + $V{PAGE_NUMBER}]]></textFieldExpression>
+                </textField>
+            </frame>
+        </band>
+    </pageFooter>
+    <!-- Summary Section <summary> – bottom of report-->
+    <summary>
+        <!-- Total height: 5 rows * 22 height = 110 _ paddint 20 *5 =100 -->
+        <band height="210">
+            <frame>
+                <reportElement x="0" y="0" width="535" height="210" style="BlankTablestyle" />
+
+            <!-- Row 1 -->
+            <staticText>
+                <reportElement x="0" y="0" width="133" height="22" style="DetailStyle" />
+            </staticText>
+            <staticText>
+                <reportElement x="133" y="0" width="133" height="22" style="DetailStyle" />
+            </staticText>
+            <staticText>
+                <reportElement x="266" y="0" width="133" height="22" style="DetailStyle" />
+            </staticText>
+            <staticText>
+                <reportElement x="399" y="0" width="136" height="22" style="DetailStyle" />
+            </staticText>
+
+            <!-- Row 2 -->
+            <staticText>
+                <reportElement x="0" y="22" width="133" height="22" style="DetailStyle" />
+            </staticText>
+            <staticText>
+                <reportElement x="133" y="22" width="133" height="22" style="DetailStyle" />
+            </staticText>
+            <staticText>
+                <reportElement x="266" y="22" width="133" height="22" style="DetailStyle" />
+            </staticText>
+            <staticText>
+                <reportElement x="399" y="22" width="136" height="22" style="DetailStyle" />
+            </staticText>
+
+            <!-- Row 3 -->
+            <staticText>
+                <reportElement x="0" y="44" width="133" height="22" style="DetailStyle" />
+            </staticText>
+            <staticText>
+                <reportElement x="133" y="44" width="133" height="22" style="DetailStyle" />
+            </staticText>
+            <staticText>
+                <reportElement x="266" y="44" width="133" height="22" style="DetailStyle" />
+            </staticText>
+            <staticText>
+                <reportElement x="399" y="44" width="136" height="22" style="DetailStyle" />
+            </staticText>
+
+            <!-- Row 4 -->
+            <staticText>
+                <reportElement x="0" y="66" width="133" height="22" style="DetailStyle" />
+            </staticText>
+            <staticText>
+                <reportElement x="133" y="66" width="133" height="22" style="DetailStyle" />
+            </staticText>
+            <staticText>
+                <reportElement x="266" y="66" width="133" height="22" style="DetailStyle" />
+            </staticText>
+            <staticText>
+                <reportElement x="399" y="66" width="136" height="22" style="DetailStyle" />
+            </staticText>
+
+            <!-- Row 5 -->
+            <staticText>
+                <reportElement x="0" y="88" width="133" height="22" style="DetailStyle" />
+            </staticText>
+            <staticText>
+                <reportElement x="133" y="88" width="133" height="22" style="DetailStyle" />
+            </staticText>
+            <staticText>
+                <reportElement x="266" y="88" width="133" height="22" style="DetailStyle" />
+            </staticText>
+            <staticText>
+                <reportElement x="399" y="88" width="136" height="22" style="DetailStyle" />
+            </staticText>
+            </frame>
+        </band>
+    </summary>
+
+</jasperReport>

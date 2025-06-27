@@ -18,6 +18,38 @@ public class VerificationToken {
     String token;
     Date expTime;
 
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public String getToken() {
+        return token;
+    }
+
+    public void setToken(String token) {
+        this.token = token;
+    }
+
+    public Date getExpTime() {
+        return expTime;
+    }
+
+    public void setExpTime(Date expTime) {
+        this.expTime = expTime;
+    }
+
+    public UserMaser getUserMaser() {
+        return userMaser;
+    }
+
+    public void setUserMaser(UserMaser userMaser) {
+        this.userMaser = userMaser;
+    }
+
     @OneToOne(fetch = FetchType.EAGER)
     @JoinColumn(
             name = "user_id", nullable = false,

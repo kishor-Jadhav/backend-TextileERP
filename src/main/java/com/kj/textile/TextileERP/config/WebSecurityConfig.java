@@ -30,8 +30,8 @@ public class WebSecurityConfig {
         "/resendtoken*",
         "/resetpassword*",
         "/loginuser",
-        "/savepassword*",
-            "/auth/loginuser"
+        "/savepassword*", "/auth/loginuser",
+            "/excel*",
 };
     @Autowired
     private JwtAuthenticationEntryPoint point;

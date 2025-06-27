@@ -38,6 +38,13 @@ public class LoomMasterController {
         return loomMasterService.getLoomMasterPagableList(page, size);
     }
 
+    @GetMapping("/getloommasteronscroll")
+    public Page<LoomMaster> getLoomMasterListOnScroll(
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "5") int size) {
+        return loomMasterService.getLoomMasterPagableList(page, size);
+    }
+
     @PostMapping("saveloomaster")
     public String saveLoomMaster(@RequestBody List<LoomMasterModel> loomMasterModel){
         return loomMasterService.saveLoomMaster(loomMasterModel);
