@@ -1,0 +1,59 @@
+spring:
+  application:
+    name: TextileERP
+
+---
+spring:
+  config:
+    activate:
+      on-profile: local
+  datasource:
+    url: jdbc:mysql://localhost:3306/texttile_erp
+    username: root
+    password: root
+  jpa:
+    database-platform: org.hibernate.dialect.MySQL8Dialect
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+app:
+  cors:
+    allowed-origin: http://localhost:5173
+
+
+---
+spring:
+  config:
+    activate:
+      on-profile: aws
+  datasource:
+    url: ${DB_URL}
+    username: ${DB_USERNAME}
+    password: ${DB_PASSWORD}
+  jpa:
+    database-platform: org.hibernate.dialect.MySQL8Dialect
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+app:
+  cors:
+    allowed-origin: http://kk-textileerp.s3-website.ap-south-1.amazonaws.com
+
+
+---
+spring:
+  config:
+    activate:
+      on-profile: prod
+  datasource:
+    url: ${DB_URL}
+    username: ${DB_USERNAME}
+    password: ${DB_PASSWORD}
+  jpa:
+    database-platform: org.hibernate.dialect.MySQL8Dialect
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+app:
+  cors:
+    allowed-origin: https://your-prod-frontend.example.com

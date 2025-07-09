@@ -3,6 +3,8 @@ package com.kj.textile.TextileERP.security;
 
 import java.io.IOException;
 
+import com.kj.textile.TextileERP.ApplicationContext.UserContext;
+import com.kj.textile.TextileERP.ApplicationContext.UserContextDTO;
 import com.kj.textile.TextileERP.Exceptions.JWTTokenException;
 import com.kj.textile.TextileERP.Exceptions.UserNotFoundException;
 import com.kj.textile.TextileERP.entity.UserMaser;
@@ -53,20 +55,28 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             try {
 
                 username = this.jwtHelper.getUsernameFromToken(token);
+                UserContextDTO userContextDTO = new UserContextDTO();
+                userContextDTO.setUsername(username);
+                userContextDTO.setUserType("Admin");
+                UserContext.set(userContextDTO);
 
             } catch (IllegalArgumentException e) {
+                UserContext.clear();
                 logger.info("Illegal Argument while fetching the username !!");
                // e.printStackTrace();
             } catch (ExpiredJwtException e) {
+                UserContext.clear();
                 logger.info("Given jwt token is expired !!");
 
                 throw new JWTTokenException("Given jwt token is expired !!");
                // e.printStackTrace();
             } catch (MalformedJwtException e) {
+                UserContext.clear();
                 logger.info("Some changed has done in token !! Invalid Token");
                 throw new JWTTokenException("Some changed has done in token !! Invalid Token");
                // e.printStackTrace();
             } catch (Exception e) {
+                UserContext.clear();
                // e.printStackTrace();
                 logger.error("Unexpected error while processing JWT token");
                 throw new JWTTokenException("Unexpected JWT error");
@@ -74,6 +84,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
 
         } else {
+            UserContext.clear();
             logger.info("Invalid Header Value !! ");
         }
 
@@ -97,6 +108,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
 
             } else {
+                UserContext.clear();
                 logger.info("Validation fails !!");
                 throw new JWTTokenException("Invalid or Expired JWT Token");
             }

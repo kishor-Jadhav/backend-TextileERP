@@ -1,0 +1,10 @@
+{
+  "master": {
+    "partyMaster": {
+      "partyName": "Party Name"
+    },
+    "loomMaster": {
+      "loomName": "Loom Name"
+    }
+  }
+}

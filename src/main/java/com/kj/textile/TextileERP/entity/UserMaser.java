@@ -17,6 +17,7 @@ public class UserMaser {
     @Column(length = 60)
     String password;
     String email;
+    String language;
 
     boolean enabled;
 

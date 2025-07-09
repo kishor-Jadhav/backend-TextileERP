@@ -1,5 +1,6 @@
 package com.kj.textile.TextileERP.entity.BusinessEntity.Master;
 
+import com.kj.textile.TextileERP.entity.UserAuditEntity;
 import com.kj.textile.TextileERP.enums.CountType;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -21,4 +22,7 @@ public class YarnMaster {
     double countNo;
     @Enumerated(EnumType.STRING)
     private CountType countType;
+
+    @Embedded
+    UserAuditEntity userAuditEntity;
 }

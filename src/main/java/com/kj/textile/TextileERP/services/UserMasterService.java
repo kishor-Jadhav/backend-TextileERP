@@ -29,4 +29,7 @@ public interface UserMasterService extends UserDetailsService {
 
     boolean checkPassword(UserMaser user, String oldPass);
     List<UserMaser> getAlluserList();
+
+
+    void setUserdetailsConfiguration(UserMaser userMaser);
 }

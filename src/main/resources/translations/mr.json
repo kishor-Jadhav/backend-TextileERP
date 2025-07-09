@@ -1,0 +1,11 @@
+{
+  "master": {
+    "partyMaster": {
+      "partyName": "पक्षाचे नाव",
+      "partyCategories":{
+        "categoryName1": "Category Name1",
+        "categoryName2": "Category Name2"
+      }
+                   }
+            }
+  }

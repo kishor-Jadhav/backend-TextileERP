@@ -10,10 +10,26 @@ import java.util.concurrent.ConcurrentHashMap;
 @Component
 public class AppContext {
     private final Map<String, String> globalSettings = new HashMap<>();
-    private final Map<String, Map<String, String>> userSettings = new ConcurrentHashMap<>();
+    private final Map<String, Map<String, String>> loginUserSettings = new ConcurrentHashMap<>();
 
     @PostConstruct
     public void init() {
+
+
+        this.initializeAdminConfigData();
+        this.initializeLoginUserConfigData();
+        this.displayConfigData();
+
+    }
+    void initializeLoginUserConfigData() {
+        Map<String, String> userSettings = new HashMap<>();
+        userSettings.put("loginUser", "");
+        userSettings.put("language", "");
+        userSettings.put("isTaskStart", "false");
+
+        loginUserSettings.put("userSettingConfig", userSettings);
+    }
+    void initializeAdminConfigData() {
         globalSettings.put("defaultLanguage", "en");
 
         // Simulate loading some predefined user settings
@@ -21,15 +37,10 @@ public class AppContext {
         adminSettings.put("theme", "dark");
         adminSettings.put("language", "en");
 
-        userSettings.put("admin", adminSettings);
+        loginUserSettings.put("admin", adminSettings);
+    }
 
-        Map<String, String> userSettings1 = new HashMap<>();
-        userSettings1.put("theme", "light");
-        userSettings1.put("language", "fr");
-        userSettings1.put("isTaskStart", "false");
-
-        userSettings.put("user123", userSettings1);
-
+    void displayConfigData(){
         System.out.println("User settings initialized");
         Map<String, Map<String, String>> allUsers = getAllUserSettings();
         System.out.println("allUsers: " + allUsers);
@@ -37,15 +48,14 @@ public class AppContext {
             System.out.println("User: " + user);
             settings.forEach((key, value) -> System.out.println("  " + key + " = " + value));
         });
-
     }
 
     public void setUserSetting(String username, String key, String value) {
-        userSettings.computeIfAbsent(username, u -> new HashMap<>()).put(key, value);
+        loginUserSettings.computeIfAbsent(username, u -> new HashMap<>()).put(key, value);
     }
 
     public String getUserSetting(String username, String key) {
-        return userSettings.getOrDefault(username, new HashMap<>()).get(key);
+        return loginUserSettings.getOrDefault(username, new HashMap<>()).get(key);
     }
 
     public String getGlobalSetting(String key) {
@@ -53,6 +63,9 @@ public class AppContext {
     }
 
     public Map<String, Map<String, String>> getAllUserSettings() {
-        return userSettings;
+        return loginUserSettings;
     }
+
+
+
 }

@@ -19,7 +19,7 @@ import java.util.UUID;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
-
+@CrossOrigin(origins = "*")
 @ResponseBody
 @RestController
 @RequestMapping("/auth")
@@ -54,6 +54,7 @@ public class LoginController {
                 String token = this.helper.generateToken(user);
                 userMaserModel.setValidateUser(isValidateUser);
                 userMaserModel.setAuthToken(token);
+                userMasterService.setUserdetailsConfiguration(user);
                 return userMaserModel;
             } else {
                 throw new InvalidPasswordException("Password does not match");

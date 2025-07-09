@@ -1,5 +1,7 @@
 package com.kj.textile.TextileERP.impl;
 
+import com.kj.textile.TextileERP.AppDataInitializer.AppContext;
+import com.kj.textile.TextileERP.ApplicationContext.UserContext;
 import com.kj.textile.TextileERP.entity.UserMaser;
 import com.kj.textile.TextileERP.entity.UserPasswordReset;
 import com.kj.textile.TextileERP.entity.VerificationToken;
@@ -20,8 +22,11 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import static com.kj.textile.TextileERP.AppDataInitializer.AppConstants.USERSETTING;
+
 @Service
 public class UserMaserImpl implements UserMasterService {
+
     @Autowired
     UserMaserRepo userMaserRepo;
 
@@ -33,6 +38,12 @@ public class UserMaserImpl implements UserMasterService {
 
     @Autowired
     UserPasswordResetRepo userPasswordResetRepo;
+
+    @Autowired
+    AppContext appContext;
+
+    @Autowired
+    UserContext userContext;
 
     @Override
     public UserMaser registerUser(UserMaserModel userMaserModel) {
@@ -125,6 +136,21 @@ public class UserMaserImpl implements UserMasterService {
     public List<UserMaser> getAlluserList() {
         return userMaserRepo.findAll();
     }
+
+    @Override
+    public void setUserdetailsConfiguration(UserMaser userMaser) {
+        appContext.setUserSetting(USERSETTING,"isTaskStart","true");
+        if (userMaser.getLanguage()!= null){
+            appContext.setUserSetting(USERSETTING,"language",userMaser.getLanguage());
+        } else {
+            appContext.setUserSetting(USERSETTING,"language","en");
+        }
+
+        appContext.setUserSetting(USERSETTING,"loginUser",userMaser.getUserName());
+
+
+    }
+
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         UserMaser userMaster = userMaserRepo.findByAuthUserName(username);

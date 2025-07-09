@@ -1,5 +1,6 @@
 package com.kj.textile.TextileERP.controller.Business.Master;
 
+import com.kj.textile.TextileERP.ApplicationContext.UserContext;
 import com.kj.textile.TextileERP.entity.BusinessEntity.Master.CityMaster;
 import com.kj.textile.TextileERP.model.Master.CityMasterModel;
 import com.kj.textile.TextileERP.services.BusinessService.Master.CityMasterService;
@@ -18,6 +19,7 @@ public class CityMasterController {
 
     @GetMapping("getcity")
     public List<CityMaster> getAllCityData() {
+
         List<CityMaster> cityData = cityMasterService.getAllCityList();
         return cityData;
     }

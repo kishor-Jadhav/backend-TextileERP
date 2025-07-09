@@ -2,7 +2,9 @@ package com.kj.textile.TextileERP.config;
 
 import com.kj.textile.TextileERP.security.JwtAuthenticationEntryPoint;
 import com.kj.textile.TextileERP.security.JwtAuthenticationFilter;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -22,9 +24,10 @@ import static org.springframework.security.config.Customizer.withDefaults;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 @Configuration
 @EnableWebSecurity
+@Slf4j
 public class WebSecurityConfig {   
     private static final String[] WHITE_LIST_URLS = {
-        "/hello1",
+        "/hello",
         "/registration",
         "/verificationToken*",
         "/resendtoken*",
@@ -36,6 +39,8 @@ public class WebSecurityConfig {
     @Autowired
     private JwtAuthenticationEntryPoint point;
 
+    @Value("${app.cors.allowed-origin}")
+    private String allowedOrigin;
 
 
     @Bean
@@ -72,9 +77,10 @@ public class WebSecurityConfig {
 
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
+        log.info("allowedOrigin:=" + allowedOrigin);
         CorsConfiguration configuration = new CorsConfiguration();
         configuration.setAllowCredentials(true);
-        configuration.addAllowedOrigin("http://localhost:5173");
+        configuration.addAllowedOrigin(allowedOrigin);
         configuration.addAllowedHeader("*");
         configuration.addAllowedMethod("*");
 

@@ -1,5 +1,7 @@
 package com.kj.textile.TextileERP.entity.BusinessEntity.Master;
 
+import com.kj.textile.TextileERP.entity.UserAuditEntity;
+import com.kj.textile.TextileERP.services.BusinessService.Master.CityMasterService;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -9,14 +11,15 @@ import lombok.*;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class CityMaster {
+public class CityMaster   {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     Long cityId;
     String cityName;
     String state;
     String pinCode;
-
+    @Embedded
+    UserAuditEntity userAuditEntity;
     public Long getCityId() {
         return cityId;
     }
@@ -48,4 +51,5 @@ public class CityMaster {
     public void setPinCode(String pinCode) {
         this.pinCode = pinCode;
     }
+
 }
