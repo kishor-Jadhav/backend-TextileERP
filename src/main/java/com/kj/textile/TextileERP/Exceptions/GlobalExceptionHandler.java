@@ -60,4 +60,15 @@ public class GlobalExceptionHandler {
 
         return new ResponseEntity<>(response, HttpStatus.UNAUTHORIZED);
     }
+    @ExceptionHandler(ApplicationDataException.class)
+    public ResponseEntity<Map<String, Object>> handleResouceNotFoundException(ApplicationDataException ex) {
+        Map<String, Object> response = new HashMap<>();
+        response.put("timestamp", LocalDateTime.now());
+        response.put("status", HttpStatus.INTERNAL_SERVER_ERROR.value());
+        response.put("error", "Unauthorized");
+        response.put("message", ex.getMessage());
+        response.put("path", "/your-secured-endpoint"); // Optionally, you can dynamically get the request path
+
+        return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
+    }
 }

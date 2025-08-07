@@ -9,7 +9,10 @@ import com.kj.textile.TextileERP.model.UserMaserModel;
 import org.springframework.security.core.userdetails.UserDetailsService;
 
 public interface UserMasterService extends UserDetailsService {
-    UserMaser registerUser(UserMaserModel userMaserModel);
+    UserMaser registerUserByAdmin(UserMaserModel userMaserModel);
+    UserMaser updateRegisterUserByAdmin(UserMaserModel userMaserModel);
+
+    List<UserMaserModel> getUserList();
 
     void saveVerificationToken(String token, UserMaser userMaser);
 
@@ -18,6 +21,9 @@ public interface UserMasterService extends UserDetailsService {
     VerificationToken getNewToken(String token);
 
     UserMaser findByEmail(String email);
+    UserMaserModel findUserById(Long Id);
+
+    UserMaserModel getUserConfigData(Long Id);
 
     void createNewTokenForResetPassword(UserMaser user, String token);
 
@@ -32,4 +38,8 @@ public interface UserMasterService extends UserDetailsService {
 
 
     void setUserdetailsConfiguration(UserMaser userMaser);
+
+
+
+    void setUserContexDTOData(UserMaser userMaster);
 }

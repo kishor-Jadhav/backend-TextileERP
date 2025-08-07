@@ -2,18 +2,27 @@ package com.kj.textile.TextileERP.impl;
 
 import com.kj.textile.TextileERP.AppDataInitializer.AppContext;
 import com.kj.textile.TextileERP.ApplicationContext.UserContext;
-import com.kj.textile.TextileERP.entity.UserMaser;
-import com.kj.textile.TextileERP.entity.UserPasswordReset;
-import com.kj.textile.TextileERP.entity.VerificationToken;
+import com.kj.textile.TextileERP.ApplicationContext.UserContextDTO;
+import com.kj.textile.TextileERP.Exceptions.ApplicationDataException;
+import com.kj.textile.TextileERP.entity.*;
+import com.kj.textile.TextileERP.entity.BaseEntity.UserAssignGroupEntity;
+import com.kj.textile.TextileERP.entity.BaseEntity.UserMenuGroupDetailMaster;
 import com.kj.textile.TextileERP.model.UserMaserModel;
+import com.kj.textile.TextileERP.repo.BaseRepo.UserAssignGroupRepo;
 import com.kj.textile.TextileERP.repo.UserMaserRepo;
+import com.kj.textile.TextileERP.repo.UserRoleRepository;
 import com.kj.textile.TextileERP.repo.VerificationTokenRepo;
+import com.kj.textile.TextileERP.services.BaseService.AppClientMasterService;
+import com.kj.textile.TextileERP.services.BaseService.AppClientProjectMasterService;
+import com.kj.textile.TextileERP.services.BaseService.UserAssignGroupService;
+import com.kj.textile.TextileERP.services.BaseService.UserMenuGroupDetailMasterService;
 import com.kj.textile.TextileERP.services.UserMasterService;
 import com.kj.textile.TextileERP.repo.UserPasswordResetRepo;
 
 import java.util.*;
 import java.util.stream.Collectors;
 
+import io.jsonwebtoken.MalformedJwtException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.User;
@@ -45,14 +54,92 @@ public class UserMaserImpl implements UserMasterService {
     @Autowired
     UserContext userContext;
 
+     @Autowired
+    AppClientProjectMasterService appClientProjectMasterService;
+
+     @Autowired
+     AppClientMasterService appClientMasterService;
+
+     @Autowired
+     UserRoleRepository userRoleRepository;
+
+     @Autowired
+     UserAssignGroupService userAssignGroupService;
+
+     @Autowired
+     UserMenuGroupDetailMasterService userMenuGroupDetailMasterService;
     @Override
-    public UserMaser registerUser(UserMaserModel userMaserModel) {
+    public UserMaser registerUserByAdmin(UserMaserModel userMaserModel) {
+        // 1. Fetch the Role Entity (already done correctly)
+        UserRoles userRoles = userRoleRepository.findByRoleName(userMaserModel.getUserRole())
+                .orElseThrow(() -> new RuntimeException("Role not found"));
+
+        // 2. Prepare the User Entity
         UserMaser userMaser = new UserMaser();
         userMaser.setUserName(userMaserModel.getUserName());
         userMaser.setPassword(passwordEncoder.encode(userMaserModel.getPassword()));
         userMaser.setEmail(userMaserModel.getEmail());
-        userMaserRepo.save(userMaser);
+        userMaser.setAuthUserName(userMaserModel.getAuthUserName());
+        userMaser.setAccountName(userMaserModel.getAccountName());
+        userMaser.setEnabled(true);  // explicitly enabling user (your choice)
+        userMaser.setDactive(false); // assuming user is active
+        userMaser.setAppClientId(userMaserModel.getAppClientMaster().getAppClientId());
+        userMaser.setAppClientProjectId(userMaserModel.getAppClientProjectMaster().getAppClientProjectId());
+
+
+
+        // 4. Save User with Roles
+         userMaserRepo.save(userMaser);
+
         return userMaser;
+    }
+
+    @Override
+    public UserMaser updateRegisterUserByAdmin(UserMaserModel userMaserModel) {
+        UserMaser userMaser = userMaserRepo.findByUserId(userMaserModel.getUserId());
+        UserRoles userRoles = userRoleRepository.findByRoleName(userMaserModel.getUserRole())
+                .orElseThrow(() -> new RuntimeException("Role not found"));
+        userMaser.setUserName(userMaserModel.getUserName());
+        if(userMaserModel.isGenerateNewPassword()){
+            userMaser.setPassword(passwordEncoder.encode(userMaserModel.getPassword()));
+        }
+        userMaser.setEnabled(userMaserModel.isEnabled());
+        userMaser.setDactive(userMaserModel.isDactive());
+        userMaser.setEmail(userMaserModel.getEmail());
+        // 3. Set the Role Properly
+        userMaser.getRoles().add(userRoles);
+        userMaser.setAccountName(userMaserModel.getAccountName());
+        userMaser.setAppClientId(userMaserModel.getAppClientMaster().getAppClientId());
+        userMaser.setAppClientProjectId(userMaserModel.getAppClientProjectMaster().getAppClientProjectId());
+        userMaserRepo.save(userMaser);
+
+        return userMaser;
+    }
+
+
+    @Override
+    public List<UserMaserModel> getUserList() {
+        List<UserMaser> userMaser = userMaserRepo.findAll();
+        List<UserMaserModel> userMaserModel = new ArrayList<>();
+        for(UserMaser data: userMaser){
+            UserMaserModel model = new UserMaserModel();
+            model.setUserId(data.getUserId());
+            model.setUserName(data.getUserName());
+            model.setAuthUserName(data.getAuthUserName());
+            model.setLanguage(data.getLanguage());
+            model.setUserAdminKeys(data.getUserAdminKeys());
+            model.setEmail(data.getEmail());
+            model.setDactive(data.isDactive());
+            model.setEmail(data.getEmail());
+            model.setUserId(data.getUserId());
+            model.setAccountName(data.getAccountName());
+            AppClientProjectMaster appClientProjectMaster = appClientProjectMasterService.getDataById(data.getAppClientProjectId());
+            AppClientMaster appClientMaster = appClientMasterService.getDataById(data.getAppClientId());
+            model.setAppClientProjectMaster(appClientProjectMaster);
+            model.setAppClientMaster(appClientMaster);
+            userMaserModel.add(model);
+        }
+        return userMaserModel;
     }
 
     @Override
@@ -92,8 +179,57 @@ public class UserMaserImpl implements UserMasterService {
         return user;
     }
 
-    
+    @Override
+    public UserMaserModel findUserById(Long Id) {
+        UserMaser data = userMaserRepo.findByUserId(Id);
 
+
+        UserMaserModel model = new UserMaserModel();
+        model.setUserId(data.getUserId());
+        model.setUserName(data.getUserName());
+        model.setAuthUserName(data.getAuthUserName());
+        model.setLanguage(data.getLanguage());
+        model.setUserAdminKeys(data.getUserAdminKeys());
+        model.setEmail(data.getEmail());
+        model.setDactive(data.isDactive());
+        model.setEmail(data.getEmail());
+        model.setUserRoles(data.getRoles());
+        model.setAccountName(data.getAccountName());
+        AppClientProjectMaster appClientProjectMaster = appClientProjectMasterService.getDataById(data.getAppClientProjectId());
+        AppClientMaster appClientMaster = appClientMasterService.getDataById(data.getAppClientId());
+        model.setAppClientProjectMaster(appClientProjectMaster);
+        model.setAppClientMaster(appClientMaster);
+
+
+        return model;
+    }
+
+    @Override
+    public UserMaserModel getUserConfigData(Long Id) {
+        UserMaser data = userMaserRepo.findByUserId(Id);
+
+
+        UserMaserModel model = new UserMaserModel();
+        model.setUserId(data.getUserId());
+        model.setUserName(data.getUserName());
+        model.setAuthUserName(data.getAuthUserName());
+        model.setLanguage(data.getLanguage());
+        model.setUserAdminKeys(data.getUserAdminKeys());
+        model.setEmail(data.getEmail());
+        model.setDactive(data.isDactive());
+        model.setEmail(data.getEmail());
+        model.setUserRoles(data.getRoles());
+        model.setAccountName(data.getAccountName());
+        AppClientProjectMaster appClientProjectMaster = appClientProjectMasterService.getDataById(data.getAppClientProjectId());
+        AppClientMaster appClientMaster = appClientMasterService.getDataById(data.getAppClientId());
+        model.setAppClientProjectMaster(appClientProjectMaster);
+        model.setAppClientMaster(appClientMaster);
+        UserAssignGroupEntity userAssignGroupEntity =  userAssignGroupService.findByUserMaser(Id);
+        model.setUserAssignGroupEntity(userAssignGroupEntity);
+        List<UserMenuGroupDetailMaster> UserMenuGroupDetailMaster = userMenuGroupDetailMasterService.getDetailList(userAssignGroupEntity.getUserMenuGroupMaster().getUserMenuGroupId());
+        model.setUserMenuGroupDetailMaster(UserMenuGroupDetailMaster);
+        return model;
+    }
     @Override
     public void createNewTokenForResetPassword(UserMaser user, String token) {
         UserPasswordReset userPasswordReset = new UserPasswordReset(user,token);
@@ -137,6 +273,7 @@ public class UserMaserImpl implements UserMasterService {
         return userMaserRepo.findAll();
     }
 
+
     @Override
     public void setUserdetailsConfiguration(UserMaser userMaser) {
         appContext.setUserSetting(USERSETTING,"isTaskStart","true");
@@ -150,13 +287,34 @@ public class UserMaserImpl implements UserMasterService {
 
 
     }
-
+    @Override
+    public void setUserContexDTOData(UserMaser userMaster){
+        try {
+        // Context Data
+        UserContextDTO userContextDTO = new UserContextDTO();
+        userContextDTO.setUsername(userMaster.getAuthUserName());
+        userContextDTO.setUserType("Admin");
+        userContextDTO.setAuditEntryUserId(userMaster.getUserId());
+        userContextDTO.setAuditAccountYearId(3L);
+        userContextDTO.setAuditClientId(userMaster.getAppClientId());
+        userContextDTO.setAuditProjectId(userMaster.getAppClientProjectId());
+        UserContext.set(userContextDTO);
+        //
+        } catch (MalformedJwtException e) {
+            throw new ApplicationDataException("User context Not set");
+        }
+    }
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         UserMaser userMaster = userMaserRepo.findByAuthUserName(username);
+
         if (userMaster == null) {
             throw new UsernameNotFoundException("User not found with email: " + username);
         }
+        if (userMaster.getRoles().isEmpty()) {
+            throw new UsernameNotFoundException("Role not define for User: " + username);
+        }
+        setUserContexDTOData(userMaster);
 
         UserDetails userDetails = User.withUsername(userMaster.getAuthUserName())
                 .password(userMaster.getPassword())

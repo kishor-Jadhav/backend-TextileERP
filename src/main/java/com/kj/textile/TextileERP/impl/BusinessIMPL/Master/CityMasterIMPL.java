@@ -4,6 +4,7 @@ import com.kj.textile.TextileERP.ApplicationContext.UserContext;
 import com.kj.textile.TextileERP.ApplicationContext.UserContextDTO;
 import com.kj.textile.TextileERP.Exceptions.ResouceNotFoundException;
 import com.kj.textile.TextileERP.entity.BusinessEntity.Master.CityMaster;
+import com.kj.textile.TextileERP.entity.UserAuditEntity;
 import com.kj.textile.TextileERP.model.Master.CityMasterModel;
 import com.kj.textile.TextileERP.repo.BusinessRepo.Master.CityMasterRepo;
 import com.kj.textile.TextileERP.services.BusinessService.Master.CityMasterService;
@@ -40,6 +41,11 @@ public CityMasterIMPL( CityMasterRepo cityMasterRepo){
         cityMaster.setCityName(cityMasterModel.getCityName());
         cityMaster.setState(cityMasterModel.getState());
         cityMaster.setPinCode(cityMasterModel.getPinCode());
+
+        //Audit Entry
+        if (cityMaster.getUserAuditEntity() == null) {
+            cityMaster.setUserAuditEntity(new UserAuditEntity());
+        }
         cityMaster.getUserAuditEntity().setCreatedDate(LocalDateTime.now());
         cityMaster.getUserAuditEntity().setCreatedBy(user.getUsername());
         cityMasterRepo.save(cityMaster);
@@ -54,11 +60,21 @@ public CityMasterIMPL( CityMasterRepo cityMasterRepo){
         if(cityMaster==null){
             throw new ResouceNotFoundException("City not found with ID: " + cityMasterModel.getCityId());
         }
+
         cityMaster.setCityName(cityMasterModel.getCityName());
         cityMaster.setState(cityMasterModel.getState());
         cityMaster.setPinCode(cityMasterModel.getPinCode());
+
+        //Audit Entry
+        if (cityMaster.getUserAuditEntity() == null) {
+            cityMaster.setUserAuditEntity(new UserAuditEntity());
+        }
         cityMaster.getUserAuditEntity().setUpdatedBy(user.getUsername());
         cityMaster.getUserAuditEntity().setUpdatedDate(LocalDateTime.now());
+        cityMaster.getUserAuditEntity().setAuditEntryUserId(user.getAuditEntryUserId());
+        cityMaster.getUserAuditEntity().setAuditClientId(user.getAuditClientId());
+        cityMaster.getUserAuditEntity().setAuditProjectId(user.getAuditProjectId());
+        cityMaster.getUserAuditEntity().setAuditAccountYearId(user.getAuditAccountYearId());
         cityMasterRepo.save(cityMaster);
         return cityMaster;
     }

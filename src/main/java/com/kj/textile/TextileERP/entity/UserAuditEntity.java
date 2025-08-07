@@ -10,10 +10,15 @@ import java.time.LocalDateTime;
 @Embeddable
 @Getter
 @Setter
-public abstract  class UserAuditEntity {
+public class UserAuditEntity {
     private String createdBy;
     private LocalDateTime createdDate;
 
     private String updatedBy;
     private LocalDateTime updatedDate;
+
+    Long auditEntryUserId;
+    Long auditAccountYearId;
+    Long auditClientId;
+    Long auditProjectId;
 }

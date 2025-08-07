@@ -55,10 +55,8 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             try {
 
                 username = this.jwtHelper.getUsernameFromToken(token);
-                UserContextDTO userContextDTO = new UserContextDTO();
-                userContextDTO.setUsername(username);
-                userContextDTO.setUserType("Admin");
-                UserContext.set(userContextDTO);
+
+
 
             } catch (IllegalArgumentException e) {
                 UserContext.clear();
@@ -97,6 +95,8 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
            // UserMaser userDetails = userDetailsService.findByEmail(username);
             UserDetails userDetails = userDetailsService.loadUserByUsername(username);
+
+
             Boolean validateToken = this.jwtHelper.validateToken(token, userDetails);
             if (validateToken) {
 

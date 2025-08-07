@@ -6,43 +6,44 @@ import lombok.*;
 import java.util.HashSet;
 import java.util.Set;
 
-
-@Data
+@Getter
+@Setter
+@Table(name = "usermaster")
+@NoArgsConstructor
+@AllArgsConstructor
 @Entity
 public class UserMaser {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     Long userId;
     String userName;
+    String authUserName;
     @Column(length = 60)
     String password;
     String email;
     String language;
-
+    String userAdminKeys;
+    String accountName;
+    Long appClientId;
+    Long appClientProjectId;
     boolean enabled;
-
-
-
-
-    String authUserName;
-
-    boolean isActive;
+    boolean isDactive;
     @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(
             name = "user_access_roles",
             joinColumns = @JoinColumn(name = "user_id"),
             inverseJoinColumns = @JoinColumn(name = "role_id")
     )
-    @ToString.Exclude // Prevents circular reference issue
+    @ToString.Exclude // Prevents circular reference iss
     @EqualsAndHashCode.Exclude
-    private Set<UserRoles> roles = new HashSet<>();
+    Set<UserRoles> roles = new HashSet<>()  ;
 
-    public boolean isActive() {
-        return isActive;
+    public boolean isDactive() {
+        return isDactive;
     }
 
     public void setActive(boolean active) {
-        isActive = active;
+        isDactive = active;
     }
 
 

@@ -58,10 +58,10 @@ public class WebSecurityConfig {
 
         http.csrf(csrf -> csrf.disable())
                 .cors(cors -> cors.configurationSource(corsConfigurationSource())).authorizeHttpRequests(auth ->
-                        auth.requestMatchers("/api/v1/**").authenticated()
-                                .requestMatchers(WHITE_LIST_URLS).permitAll()
-                                 .requestMatchers("/api/v2/auth/**").hasRole("ADMIN")
-                                .requestMatchers("/api/v2/user/**").hasRole("USER")
+                        auth.requestMatchers(WHITE_LIST_URLS).permitAll()
+                                .requestMatchers("/api/v1/**").authenticated()
+                                .requestMatchers("/api/v2/auth/**").hasAnyRole("ADMIN","SUPERADMIN")
+                                .requestMatchers("/api/v2/superauth/**").hasRole("SUPERADMIN")
                                 .anyRequest().authenticated())
                 .exceptionHandling(ex -> ex.authenticationEntryPoint(point))
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS));

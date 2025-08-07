@@ -35,10 +35,15 @@ public class RegistrationController {
     RegistrationController(PasswordEncoder passwordEncoder) {
         this.passwordEncoder = passwordEncoder;
     }
+    @PostMapping("/userregistration")
+    public UserMaserModel  userRegistration(@RequestBody UserMaserModel userMaserModel, HttpServletRequest request) {
+        UserMaser user = userMasterService.registerUserByAdmin(userMaserModel);
 
+        return userMaserModel;
+    }
     @PostMapping("/registration")
     public String registration(@RequestBody UserMaserModel userMaserModel, HttpServletRequest request) {
-        UserMaser user = userMasterService.registerUser(userMaserModel);
+        UserMaser user = userMasterService.registerUserByAdmin(userMaserModel);
         applicationEventPublisher.publishEvent(new RegistrationCompleteEvent(user,
                 applicationUrl(request)));
         return "Success";

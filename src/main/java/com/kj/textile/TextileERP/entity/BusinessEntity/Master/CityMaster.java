@@ -19,7 +19,7 @@ public class CityMaster   {
     String state;
     String pinCode;
     @Embedded
-    UserAuditEntity userAuditEntity;
+    UserAuditEntity userAuditEntity = new UserAuditEntity();
     public Long getCityId() {
         return cityId;
     }
