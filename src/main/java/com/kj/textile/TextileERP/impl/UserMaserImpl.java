@@ -127,11 +127,12 @@ public class UserMaserImpl implements UserMasterService {
             model.setUserName(data.getUserName());
             model.setAuthUserName(data.getAuthUserName());
             model.setLanguage(data.getLanguage());
-            model.setUserAdminKeys(data.getUserAdminKeys());
+          //  model.setUserAdminKeys(data.getUserAdminKeys());
             model.setEmail(data.getEmail());
             model.setDactive(data.isDactive());
             model.setEmail(data.getEmail());
             model.setUserId(data.getUserId());
+            model.setUserRoles(data.getRoles());
             model.setAccountName(data.getAccountName());
             AppClientProjectMaster appClientProjectMaster = appClientProjectMasterService.getDataById(data.getAppClientProjectId());
             AppClientMaster appClientMaster = appClientMasterService.getDataById(data.getAppClientId());
