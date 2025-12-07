@@ -4,6 +4,7 @@ import com.kj.textile.TextileERP.entity.BaseEntity.UserMenuGroupDetailMaster;
 import com.kj.textile.TextileERP.entity.BaseEntity.UserMenuMaster;
 import com.kj.textile.TextileERP.model.BaseModel.AppClientProjectMasterModel;
 import com.kj.textile.TextileERP.model.BaseModel.UserMenuGroupDetailMasterModel;
+import com.kj.textile.TextileERP.model.BaseModel.UserMenuMasterModel;
 import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 
@@ -27,6 +28,7 @@ public interface UserMenuGroupDetailMasterService {
 
     UserMenuGroupDetailMaster getDataById(Long Id);
     List<UserMenuGroupDetailMaster> getDetailList(Long Id);
+    List<UserMenuMasterModel> getMenuDetailList(Long Id,String userRoll);
 
     @Transactional
     String deleteUserGroupDetail(Long Id);

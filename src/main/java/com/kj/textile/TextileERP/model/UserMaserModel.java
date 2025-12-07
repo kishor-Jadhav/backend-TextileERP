@@ -6,6 +6,7 @@ import com.kj.textile.TextileERP.entity.AppClientProjectMaster;
 import com.kj.textile.TextileERP.entity.BaseEntity.UserAssignGroupEntity;
 import com.kj.textile.TextileERP.entity.BaseEntity.UserMenuGroupDetailMaster;
 import com.kj.textile.TextileERP.entity.UserRoles;
+import com.kj.textile.TextileERP.model.BaseModel.UserMenuMasterModel;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.Getter;
@@ -45,5 +46,6 @@ public class UserMaserModel {
      boolean isDactive;
      Set<UserRoles> userRoles = new HashSet<>()  ;
      UserAssignGroupEntity userAssignGroupEntity;
-     List<UserMenuGroupDetailMaster> UserMenuGroupDetailMaster;
+   //  List<UserMenuGroupDetailMaster> UserMenuGroupDetailMaster;
+     List<UserMenuMasterModel> UserMenuGroupDetailMaster;
 }

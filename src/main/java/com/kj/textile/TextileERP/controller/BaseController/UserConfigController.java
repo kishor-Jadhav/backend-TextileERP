@@ -4,6 +4,7 @@ import com.kj.textile.TextileERP.ApplicationContext.UserContext;
 import com.kj.textile.TextileERP.ApplicationContext.UserContextDTO;
 import com.kj.textile.TextileERP.entity.AppClientMaster;
 import com.kj.textile.TextileERP.entity.BaseEntity.UserMenuGroupDetailMaster;
+import com.kj.textile.TextileERP.model.BaseModel.UserMenuMasterModel;
 import com.kj.textile.TextileERP.model.UserMaserModel;
 import com.kj.textile.TextileERP.services.BaseService.UserMenuGroupDetailMasterService;
 import com.kj.textile.TextileERP.services.UserMasterService;
@@ -29,9 +30,9 @@ public class UserConfigController {
         return userData;
     }
     @GetMapping("getusermenuconfiglist")
-    public List<UserMenuGroupDetailMaster> getUserMenuList(@PathVariable String groupId) {
+    public List<UserMenuMasterModel> getUserMenuList(@PathVariable String groupId) {
 
-        List<UserMenuGroupDetailMaster> UserMenuGroupDetailMaster = userMenuGroupDetailMasterService.getDetailList(Long.parseLong(groupId));
+        List<UserMenuMasterModel> UserMenuGroupDetailMaster = userMenuGroupDetailMasterService.getMenuDetailList(Long.parseLong(groupId),"");
         return UserMenuGroupDetailMaster;
     }
 }

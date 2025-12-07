@@ -1,17 +1,23 @@
 package com.kj.textile.TextileERP.impl.BaseImpl;
 
+import com.kj.textile.TextileERP.ApplicationContext.UserContext;
+import com.kj.textile.TextileERP.ApplicationContext.UserContextDTO;
 import com.kj.textile.TextileERP.entity.BaseEntity.UserMenuGroupDetailMaster;
 import com.kj.textile.TextileERP.entity.BaseEntity.UserMenuMaster;
 import com.kj.textile.TextileERP.model.BaseModel.UserMenuGroupDetailMasterModel;
+import com.kj.textile.TextileERP.model.BaseModel.UserMenuMasterModel;
 import com.kj.textile.TextileERP.repo.BaseRepo.UserMenuGroupDetailMasterRepo;
 import com.kj.textile.TextileERP.repo.BaseRepo.UserMenuMasterRepo;
 import com.kj.textile.TextileERP.services.BaseService.UserMenuGroupDetailMasterService;
+import com.kj.textile.TextileERP.services.BaseService.UserMenuMasterService;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
+
 @Service
 public class UserMenuGroupDetailMasterImpl implements UserMenuGroupDetailMasterService {
     @Autowired
@@ -19,6 +25,9 @@ public class UserMenuGroupDetailMasterImpl implements UserMenuGroupDetailMasterS
 
     @Autowired
     UserMenuMasterRepo userMenuMasterRepo;
+
+    @Autowired
+    UserMenuMasterService userMenuMasterService;
     @Override
     public List<UserMenuGroupDetailMaster> getAllList() {
         return userMenuGroupDetailMasterRepo.findAll();
@@ -101,12 +110,54 @@ public class UserMenuGroupDetailMasterImpl implements UserMenuGroupDetailMasterS
     @Override
     public UserMenuGroupDetailMaster getDataById(Long Id) {
 
-        return null;
+        return userMenuGroupDetailMasterRepo.findByUserMenuGroupDetailId(Id);
     }
 
     @Override
     public List<UserMenuGroupDetailMaster> getDetailList(Long Id) {
         return userMenuGroupDetailMasterRepo.findByUserMenuGroupId(Id);
+    }
+
+    @Override
+    public List<UserMenuMasterModel> getMenuDetailList(Long Id, String userRoll ) {
+        UserContextDTO user = UserContext.get();
+        List<UserMenuMasterModel> menuList = new  ArrayList<>();
+        if(Objects.equals(userRoll, "ROLE_SUPERADMIN")){
+            List<UserMenuMaster> dataList = userMenuMasterService.getAllList();
+            for(UserMenuMaster list: dataList){
+                UserMenuMasterModel userMenuMasterModel = new UserMenuMasterModel();
+                userMenuMasterModel.setMenuId(list.getMenuId());
+                userMenuMasterModel.setMenuName(list.getMenuName());
+                userMenuMasterModel.setAdd(true);
+                userMenuMasterModel.setEdit(true);
+                userMenuMasterModel.setDelete(true);
+                userMenuMasterModel.setMenuOrder(list.getMenuOrder());
+                userMenuMasterModel.setMenuLevel(list.getMenuLevel());
+                userMenuMasterModel.setMenuRoute(list.getMenuRoute());
+                userMenuMasterModel.setParentMenuId(list.getParentMenuId());
+                menuList.add(userMenuMasterModel);
+            }
+            return menuList;
+        }
+        List<UserMenuGroupDetailMaster> MenuGroupDetailList =  userMenuGroupDetailMasterRepo.findByUserMenuGroupId(Id);
+        for(UserMenuGroupDetailMaster list: MenuGroupDetailList) {
+            if (list.isView())
+            {
+            UserMenuMasterModel userMenuMasterModel = new UserMenuMasterModel();
+            userMenuMasterModel.setMenuId(list.getUserMenuMaster().getMenuId());
+            userMenuMasterModel.setMenuName(list.getUserMenuMaster().getMenuName());
+            userMenuMasterModel.setAdd(list.isAdd());
+            userMenuMasterModel.setEdit(list.isEdit());
+            userMenuMasterModel.setDelete(list.isDelete());
+            userMenuMasterModel.setMenuOrder(list.getUserMenuMaster().getMenuOrder());
+            userMenuMasterModel.setMenuLevel(list.getUserMenuMaster().getMenuLevel());
+            userMenuMasterModel.setMenuRoute(list.getUserMenuMaster().getMenuRoute());
+            userMenuMasterModel.setParentMenuId(list.getUserMenuMaster().getParentMenuId());
+            menuList.add(userMenuMasterModel);
+         }
+        }
+
+        return menuList;
     }
     @Transactional
     @Override

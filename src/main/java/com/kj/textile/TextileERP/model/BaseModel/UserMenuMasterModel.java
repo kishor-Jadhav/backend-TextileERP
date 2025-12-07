@@ -22,5 +22,8 @@ public class UserMenuMasterModel {
     String  menuRoute;
     boolean isNotDelete;
     AppClientProjectMaster clientProjectMaster;
-
+    boolean isAdd;
+    boolean isEdit;
+    boolean isView;
+    boolean isDelete;
 }

@@ -13,7 +13,7 @@ public interface UserMasterService extends UserDetailsService {
     UserMaser updateRegisterUserByAdmin(UserMaserModel userMaserModel);
 
     List<UserMaserModel> getUserList();
-
+    List<UserMaserModel> getUserCreationList();
     void saveVerificationToken(String token, UserMaser userMaser);
 
     String validateVerificationToken( String token);

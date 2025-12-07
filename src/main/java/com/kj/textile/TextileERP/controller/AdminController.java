@@ -36,6 +36,13 @@ public class AdminController {
         List<UserMaserModel> user = userMasterService.getUserList();
         return user;
     }
+
+    @GetMapping("auth/getnewuserlist")
+    public List<UserMaserModel> getNewuserlist(Authentication authentication) {
+
+        List<UserMaserModel> user = userMasterService.getUserCreationList();
+        return user;
+    }
 	 @GetMapping("auth/getregisteruser/{Id}")
     public UserMaserModel getregisteruser(@PathVariable String Id) {
 

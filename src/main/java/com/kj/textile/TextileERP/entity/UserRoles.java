@@ -13,7 +13,7 @@ public class UserRoles {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long roleId;
-
+    private int rolePriority;
     @Column(unique = true, nullable = false)
     private String roleName; // e.g., ROLE_ADMIN, ROLE_USER
 }
